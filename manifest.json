@@ -1,6 +1,6 @@
 {
-  "name": "Codepen Dbgr",
-  "version": "0.1",
+  "name": "Codopen",
+  "version": "1.0",
   "manifest_version": 2,
   "description": "Easy-peasy debugging of all your codepen codepens!",
 
@@ -12,7 +12,8 @@
   "page_action": {
     "default_icon": {
       "16": "icons/icon16.png",
-      "32": "icons/icon32.png"
+      "32": "icons/icon32.png",
+      "128": "icons/icon128.png"
     }
   },
 
