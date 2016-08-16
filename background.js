@@ -29,12 +29,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function makeRule(host, url) {
+function makeRule(urlRegex) {
   return {
     conditions: [
       new chrome.declarativeContent.PageStateMatcher({
-        pageUrl: { hostEquals: host,
-                   urlContains: url}
+        pageUrl: { urlMatches: urlRegex }
       })
     ],
     actions: [new chrome.declarativeContent.ShowPageAction()]
@@ -45,8 +44,8 @@ function makeRule(host, url) {
 chrome.runtime.onInstalled.addListener(function(details) {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([
-      makeRule("codepen.io", "/pen/"),
-      makeRule("s.codepen.io", "/debug/")
+      makeRule(".+://codepen.io/.+/pen/.+"),
+      makeRule(".+://s.codepen.io/.+/debug/.+")
     ]);
   });
 });
