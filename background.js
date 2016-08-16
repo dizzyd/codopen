@@ -87,9 +87,16 @@ function toggleDebug(tab) {
   });
 }
 
+
+chrome.runtime.onUpdateAvailable.addListener(function() {
+  ga('send', 'event', 'action', 'updated', '')
+  chrome.runtime.restart();
+});
+
 chrome.pageAction.onClicked.addListener(function(tab) {
   // Toggle the debugger; declarativeContent rules ensure
   // the active tab is a codepen
+  ga('send', 'event', 'action', 'toggle', 'button');
   toggleDebug(tab);
 });
 
@@ -102,8 +109,29 @@ chrome.commands.onCommand.addListener(function(cmd) {
                              "*://s.codepen.io/*/debug/*"]},
                       function(tabs) {
                         if (tabs.length > 0) {
+                          ga('send', 'event', 'action', 'toggle', 'keyboard');
                           toggleDebug(tabs[0]);
                         }
                       });
   }
 });
+
+// Setup analytics
+if (!window.ga) {
+  (function(){
+    window.ga = function() {
+      (window.ga.q = window.ga.q || []).push(arguments);
+    }, window.ga.l = 1 * new Date();
+
+    var tag = 'script';
+    var a = document.createElement(tag);
+    var m = document.getElementsByTagName(tag)[0];
+
+    a.async = 1;
+    a.src = 'https://www.google-analytics.com/analytics.js';
+    m.parentNode.insertBefore(a, m);
+  })();
+
+  ga('create', 'UA-44410703-2', 'auto');
+  ga('set', 'checkProtocolTask', null);
+}
