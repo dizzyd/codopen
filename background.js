@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, David Smith <dizzyd@dizzyd.com>
+ * Copyright (c) 2016-2019, David Smith <dizzyd@dizzyd.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([
       makeRule(".+://codepen.io/.+/pen/.+"),
-      makeRule(".+://s.codepen.io/.+/debug/.+")
+      makeRule(".+://cdpn.io/.+/debug/.+")
     ]);
   });
 });
@@ -56,10 +56,12 @@ function invertUrl(url) {
   url = url.split(/[?#]/)[0];
   if (url.includes("/pen/")) {
     return url.replace("/pen/", "/debug/")
-              .replace("/codepen.io/", "/s.codepen.io/");
+              .replace("/codepen.io/", "/cdpn.io/");
   } else {
+    // On debug URLs, strip last element of the path off
+    url = url.slice(0, url.lastIndexOf("/"))
     return url.replace("/debug/", "/pen/")
-              .replace("/s.codepen.io/", "/codepen.io/");
+              .replace("/cdpn.io/", "/codepen.io/");
   }
 }
 
@@ -106,7 +108,7 @@ chrome.commands.onCommand.addListener(function(cmd) {
     // If the active tab is a codepen.io, toggle it
     chrome.tabs.query({active:true,
                        url: ["*://codepen.io/*/pen/*",
-                             "*://s.codepen.io/*/debug/*"]},
+                             "*://cdpn.io/*/debug/*"]},
                       function(tabs) {
                         if (tabs.length > 0) {
                           ga('send', 'event', 'action', 'toggle', 'keyboard');
